@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>teacher</title>
+    <link rel="stylesheet" href="/css/myPagination.css">
+    <link rel="stylesheet" href="/css/teacherForm.css">
+
+</head>
+<body>
+
+<h1>TacherPage</h1>
+<div id="teacherList" style="height: 150px;position:relative;">
+    <table id="teacherTable"></table>
+    <button style="position: absolute;bottom: 50px;" onclick="addTeacher()">新增</button>
+    <button style="position: absolute;bottom: 50px;left: 50px" onclick="loginOut()">退出</button>
+    <div id="pagination" class="pagination"></div>
+</div>
+<div id="teacherForm" class="teacherForm">
+    <br/><br/>
+    <h2 style="margin-left: 150px;color: chartreuse">教师信息</h2>
+    <h4 style="margin-left: 150px;color: red;display: none" id="errorMsg"></h4>
+    <ul>
+        <p style="display: none"><input type="text" id="teacherId" name="teacherId"/></p>
+        <li class="foramFirst">
+            <h3>教师姓名</h3>
+            <p><input type="text" id="teacherName" name="teacherName" placeholder="教师姓名"/></p>
+        </li>
+        <li>
+            <h3>教师年龄</h3>
+            <p><input type="text" id="teacherAge" name="teacherAge" placeholder="教师年龄"/></p>
+        </li>
+        <li>
+            <h3>教师邮箱</h3>
+            <p><input type="text" id="teacherEmail" name="teacherEmail" placeholder="教师邮箱"/></p>
+        </li>
+        <li>
+            <h3>所教年级</h3>
+            <p><input type="text" id="teacherClass" name="teacherClass" placeholder="所教年级"/></p>
+        </li>
+        <li>
+            <h3>所教科目</h3>
+            <p><input type="text" id="teacherSubject" name="teacherSubject" placeholder="所教科目"/></p>
+        </li>
+        <li class="formLast">
+            <button style="margin-left: 150px" id="addSubmit" onclick="add()">点我报存</button>
+        </li>
+    </ul>
+</div>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/config.js"></script>
+<script src="/js/myPagination.js"></script>
+
+<script>
+
+    $(function() {
+
+        /**
+         * 分页教师列表数据
+         */
+        getTeacherList(data, 1, pageSize);
+
+        /**
+         * 隐藏教师信息表单
+         */
+        $('#teacherForm').hide();
+
+        /**
+         * 教师表单信息格式校验
+         */
+        $('#teacherName').blur(checkTeacher);
+        if(null != $('#teacherName').val() || "" != $('#teacherName').val()) {
+            $('#teacherAge').blur(checkTeacher);
+        }
+        if(null != $('#teacherAge').val() || "" != $('#teacherAge').val()) {
+            $('#teacherEmail').blur(checkTeacher);
+        }
+    })
+
+    /**
+     * 教师列表数据存储
+     */
+    var data = {};
+    var pageSize = 2;
+
+
+    /**
+     * 退出登录
+     */
+    function loginOut() {
+        $.ajax({
+            type: "GET",
+            url: "/user/loginOut",
+            dataType: 'json',
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                console.log(result);
+                if (result.code == 0) {
+                    window.location.href = baseUrl()+"/user/login.htm";
+                } else {
+                    console.log(result)
+                }
+            },
+            error: function (result) {
+                console.log(result);
+            }
+        })
+    }
+
+    /**
+     * 验证表单信息
+     */
+    function checkTeacher() {
+        var teacher = getTeacher();
+        $.ajax({
+            type: "POST",
+            url: "/tTeacher/check",
+            dataType: 'json',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify(teacher),
+            success: function (result) {
+                console.log(result);
+                if (result.code == 0) {
+                    $('#addSubmit').attr("disabled", false);
+                    $('#errorMsg').hide();
+                } else {
+                    $('#errorMsg').html(result.msg);
+                    $('#errorMsg').show();
+                    $('#addSubmit').attr("disabled", true);
+                }
+            },
+            error: function (result) {
+                console.log(result);
+            }
+        })
+    }
+
+    /**
+     * 打开输入表单
+     */
+    function addTeacher() {
+        $('#teacherId').val("");
+        $('#teacherName').val("");
+        $('#teacherAge').val("");
+        $('#teacherEmail').val("");
+        $('#teacherClass').val("");
+        $('#teacherSubject').val("");
+        $('#teacherForm').show();
+    }
+
+    /**
+     * 获取教师表单的属性信息
+     */
+    function getTeacher() {
+        var teacher = {};
+        teacher.teacherId = $('#teacherId').val();
+        teacher.teacherAge = $('#teacherAge').val();
+        teacher.teacherName = $('#teacherName').val();
+        teacher.teacherEmail = $('#teacherEmail').val();
+        teacher.teacherClass = $('#teacherClass').val();
+        teacher.teacherSubject = $('#teacherSubject').val();
+        return teacher;
+    }
+
+    /**
+     * 保存按钮
+     */
+    function add() {
+        var teacher = getTeacher();
+        var url = "";
+        var type = "";
+        if(null == teacher.teacherId || "" == teacher.teacherId){
+            type = "POST";
+            url = "/tTeacher/add";
+        }else {
+            type = "PUT";
+            url = "/tTeacher/update";
+        }
+        $.ajax({
+            type: type,
+            url: url,
+            dataType: 'json',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify(teacher),
+            success: function (result) {
+                if (result.code == 0) {
+                    $('#teacherForm').hide();
+                    getTeacherList(data, 1, pageSize);
+                } else {
+                    console.log(result);
+                }
+            },
+            error: function (result) {
+                console.log(result);
+            }
+        })
+    }
+
+    /**
+     * 编辑
+     */
+    function editTeacher(teacherId) {
+        $.ajax({
+            type: "GET",
+            url: "/tTeacher/"+teacherId+"/",
+            dataType: 'json',
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                if (result.code == 0) {
+                    var teacher = result.data;
+                    $('#teacherId').val(teacher.teacherId);
+                    $('#teacherName').val(teacher.teacherName);
+                    $('#teacherAge').val(teacher.teacherAge);
+                    $('#teacherEmail').val(teacher.teacherEmail);
+                    $('#teacherClass').val(teacher.teacherClass);
+                    $('#teacherSubject').val(teacher.teacherSubject);
+                    $('#teacherForm').show();
+                } else {
+                    console.log(result);
+                }
+            },
+            error: function (result) {
+                console.log(result);
+            }
+        })
+    }
+
+    /**
+     * 删除
+     */
+    function deleteTeacher(teacherId) {
+        $.ajax({
+            type: "DELETE",
+            url: "/tTeacher/"+teacherId+"/",
+            dataType: 'json',
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                if (result.code == 0) {
+                    getTeacherList(data, 1, pageSize);
+                } else if (result.code == 1) {
+                    console.log(result);
+                }
+            },
+            error: function (result) {
+                console.log(result);
+            }
+        })
+    }
+
+    /**
+     * 分页查询
+     */
+    function getTeacherList(data, pageNum, pageSize) {
+        $.ajax({
+            type: "POST",
+            url: "/tTeacher/all/" + pageNum + "/" + pageSize + "/",
+            dataType: 'json',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.code == 0) {
+                    $('#teacherTable').html("");
+                    var trTemp = "";
+                    trTemp += "<tr>";
+                    trTemp += " <th>教师姓名</th>";
+                    trTemp += "<th>年龄</th>";
+                    trTemp += "<th>邮箱</th>";
+                    trTemp += "<th>所教年级</th>";
+                    trTemp += "<th>所教课程</th>";
+                    trTemp += "<th>操作</th>";
+                    trTemp += "</tr>";
+                    $(result.data.list).each(function (i, teacher) {
+                        trTemp += "<tr>";
+                        trTemp += "<td>" + teacher.teacherName + "</td>";
+                        trTemp += "<td>" + teacher.teacherAge + "</td>";
+                        trTemp += "<td>" + teacher.teacherEmail + "</td>";
+                        trTemp += "<td>" + teacher.teacherClass + "</td>";
+                        trTemp += "<td>" + teacher.teacherSubject + "</td>";
+                        trTemp += "<td><a href='javascript:void(0)' onclick='editTeacher("+teacher.teacherId+")'>编辑</a>/<a href='javascript:void(0)' onclick='deleteTeacher("+teacher.teacherId+")'>删除</a></td>";
+                        trTemp += "</tr>";
+                    })
+                    $('#teacherTable').append(trTemp);
+                    newPage(pageNum, pageSize, result.data.pages, result.data.total)
+                } else {
+                    console.log(result);
+                }
+            },
+            error: function (result) {
+                console.log(result);
+            }
+        })
+    }
+
+    /**
+     * 分页插件
+     */
+    function newPage(pageNum, pageSize, pageTotal, dataTotal) {
+        new myPagination({
+            id: 'pagination',
+            curPage: pageNum, //初始页码
+            pageTotal: pageTotal, //总页数
+            pageAmount: pageSize,  //每页多少条
+            dataTotal: dataTotal, //总共多少条数据
+            pageSize: 5, //可选,分页个数
+            showPageTotalFlag: true, //是否显示数据统计
+            showSkipInputFlag: true, //是否支持跳转
+            getPage: function (page) {
+                getTeacherList(data, page, pageSize);
+            }
+        })
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sayiamfun.springboot2mybatisdemo.mapper.TbAccountMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sayiamfun.springboot2mybatisdemo.entity.TbAccount">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="balance" property="balance" />
+    </resultMap>
+
+    <sql id="BASE_TABLE">
+        tb_account
+    </sql>
+
+    <sql id="BASE_COLUMN">
+     id,`name`,balance,deleted
+    </sql>
+
+    <select id="selectAccounts" resultType="com.sayiamfun.springboot2mybatisdemo.entity.TbAccount" parameterType="com.sayiamfun.springboot2mybatisdemo.common.requestentity.QueryAccount">
+        SELECT
+        <include refid="BASE_COLUMN"/>
+        FROM
+        <include refid="BASE_TABLE"/>
+        <where>
+            deleted = 0
+            <if test="name != null and name.length()>0">and `name` like #{name}</if>
+        </where>
+    </select>
+
+</mapper>

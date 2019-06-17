@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>清爽简洁的登录页面_dowebok</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            height: 100%;
+            background: #fff url(/images/backgroud.png) 50% 50% no-repeat;
+            background-size: cover;
+        }
+
+        .dowebok {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 430px;
+            height: 620px;
+            margin: -300px 0 0 -215px;
+            border: 1px solid #fff;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .logo {
+            width: 104px;
+            height: 104px;
+            margin: 50px auto 80px;
+            background: url(/images/login.png) 0 0 no-repeat;
+        }
+
+        .form-item {
+            position: relative;
+            width: 360px;
+            margin: 0 auto;
+            padding-bottom: 30px;
+        }
+
+        .form-item input {
+            width: 288px;
+            height: 48px;
+            padding-left: 70px;
+            border: 1px solid #fff;
+            border-radius: 25px;
+            font-size: 18px;
+            color: #fff;
+            background-color: transparent;
+            outline: none;
+        }
+
+        .form-item button {
+            width: 360px;
+            height: 50px;
+            border: 0;
+            border-radius: 25px;
+            font-size: 18px;
+            color: #1f6f4a;
+            outline: none;
+            cursor: pointer;
+            background-color: #fff;
+        }
+
+        #username {
+            background: url(/images/emil.png) 20px 14px no-repeat;
+        }
+
+        #password {
+            background: url(/images/password.png) 23px 11px no-repeat;
+        }
+
+        .tip {
+            display: none;
+            position: absolute;
+            left: 20px;
+            top: 52px;
+            font-size: 14px;
+            color: #f50;
+        }
+
+        .reg-bar {
+            width: 360px;
+            margin: 20px auto 0;
+            font-size: 14px;
+            overflow: hidden;
+        }
+
+        .reg-bar a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .reg-bar a:hover {
+            text-decoration: underline;
+        }
+
+        .reg-bar .reg {
+            float: left;
+        }
+
+        .reg-bar .forget {
+            float: right;
+        }
+
+        .dowebok ::-webkit-input-placeholder {
+            font-size: 18px;
+            line-height: 1.4;
+            color: #fff;
+        }
+
+        .dowebok :-moz-placeholder {
+            font-size: 18px;
+            line-height: 1.4;
+            color: #fff;
+        }
+
+        .dowebok ::-moz-placeholder {
+            font-size: 18px;
+            line-height: 1.4;
+            color: #fff;
+        }
+
+        .dowebok :-ms-input-placeholder {
+            font-size: 18px;
+            line-height: 1.4;
+            color: #fff;
+        }
+
+        @media screen and (max-width: 500px) {
+            * {
+                box-sizing: border-box;
+            }
+
+            .dowebok {
+                position: static;
+                width: auto;
+                height: auto;
+                margin: 0 30px;
+                border: 0;
+                border-radius: 0;
+            }
+
+            .logo {
+                margin: 50px auto;
+            }
+
+            .form-item {
+                width: auto;
+            }
+
+            .form-item input, .form-item button, .reg-bar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="loginDiv" class="dowebok">
+    <div class="logo"></div>
+    <div class="form-item">
+        <input id="loginUsername" type="text" autocomplete="off" placeholder="用户名或手机号">
+        <p id="loginUsernameTip" class="tip"></p>
+    </div>
+    <div class="form-item">
+        <input id="loginPassword" type="password" autocomplete="off" placeholder="登录密码">
+        <p id="loginPasswordTip" class="tip"></p>
+    </div>
+    <div class="form-item">
+        <button id="loginSubmit">登 录</button>
+    </div>
+    <div class="reg-bar">
+        <a id="loginRegister" class="reg" target="_blank">立即注册</a>
+        <a class="forget" href="http://www.dowebok.com" target="_blank">忘记密码</a>
+    </div>
+</div>
+<div id="registerDiv" class="dowebok">
+    <div class="logo"></div>
+    <div class="form-item">
+        <input id="registerUsername" type="text" autocomplete="off" placeholder="用户名">
+        <p id="registerUsernameTip" class="tip"></p>
+    </div>
+    <div class="form-item">
+        <input id="registerPassword" type="password" autocomplete="off" placeholder="登录密码">
+        <p id="registerPasswordTip" class="tip"></p>
+    </div>
+    <div class="form-item">
+        <input id="phone" type="text" autocomplete="off" placeholder="手机号">
+        <p id="phoneTip" class="tip"></p>
+    </div>
+    <div class="form-item">
+        <button id="registerSubmit">注册</button>
+    </div>
+    <div class="reg-bar">
+        <a id="register" class="reg" target="_blank">重置</a>
+        <a id="registerLogin" class="forget" target="_blank">去登录</a>
+    </div>
+</div>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/config.js"></script>
+<script>
+    $(function () {
+        $('#registerDiv').hide();
+        /**
+         * 登录表单校验
+         */
+        $('#loginUsername').blur(checkLoginUser);
+        $('#loginPassword').blur(checkLoginUser);
+        /**
+         * 注册表单校验
+         */
+        $("#registerUsername").blur(checkRegisterUser);
+        $("#registerPassword").blur(checkRegisterUser);
+        $("#phone").blur(checkRegisterUser);
+        /**
+         * 重置
+         */
+        $('#register').on('click', function () {
+            $("#registerUsername").val("")
+            $("#registerPassword").val("");
+            $("#phone").val("");
+            $('#registerUsernameTip').hide();
+            $('#registerPasswordTip').hide();
+            $('#phoneTip').hide();
+        })
+        /**
+         * 注册方法
+         */
+        $('#registerSubmit').on('click', function () {
+            var data = getRegisterData();
+            $.ajax({
+                type: "POST",
+                url: "/user/add",
+                dataType: 'json',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify(data),
+                success: function (result) {
+                    $('#registerUsernameTip').hide();
+                    $('#registerPasswordTip').hide();
+                    $('#phoneTip').hide();
+                    if (result.code == 0) {
+                        alert("注册成功");
+                        $('#registerUsernameTip').hide();
+                        $('#registerPasswordTip').hide();
+                        $('#phoneTip').hide();
+                    } else {
+                        if (result.msg.indexOf("用户名") >= 0) {
+                            $('#registerUsernameTip').html(result.msg);
+                            $('#registerUsernameTip').show();
+                        } else if (result.msg.indexOf("密码") >= 0) {
+                            $('#registerPasswordTip').html(result.msg);
+                            $('#registerPasswordTip').show();
+                        } else if (result.msg.indexOf("手机") >= 0) {
+                            $('#phoneTip').html(result.msg);
+                            $('#phoneTip').show();
+                        }
+                    }
+                },
+                error: function (result) {
+                    console.log(result)
+                }
+            });
+        })
+        /**
+         * 显示登录div
+         */
+        $('#registerLogin').on('click', function () {
+            $('#loginDiv').show();
+            $('#registerDiv').hide();
+        })
+        /**
+         * 显示注册div
+         */
+        $('#loginRegister').on('click', function () {
+            $('#loginDiv').hide();
+            $('#registerDiv').show();
+        })
+
+        /**
+         * 封装参数对象
+         */
+        function getLoginData() {
+            var data = {}
+            data.userName = $('#loginUsername').val();
+            data.password = $('#loginPassword').val();
+            return data;
+        }
+        function getRegisterData() {
+            var data = {}
+            data.userName = $('#registerUsername').val();
+            data.password = $('#registerPassword').val();
+            data.phone = $('#phone').val();
+            return data;
+        }
+        /**
+         * 校验登录对象方法
+         */
+        function checkLoginUser() {
+            var data = getLoginData();
+            data.phone = "13312341234";
+            $.ajax({
+                type: "POST",
+                url: "/user/check",
+                dataType: 'json',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify(data),
+                success: function (result) {
+                    $('#loginUsernameTip').hide();
+                    $('#loginPasswordTip').hide();
+                    if (result.code == 0) {
+                        $('#loginUsernameTip').hide();
+                        $('#loginPasswordTip').hide();
+                        $('#loginSubmit').attr("disabled", false);
+                        $('#loginSubmit').css("background-color", "#fff");
+                    } else {
+                        if (result.msg.indexOf("用户名") >= 0) {
+                            $('#loginUsernameTip').html(result.msg);
+                            $('#loginUsernameTip').show();
+                            $('#loginSubmit').attr("disabled", true);
+                            $('#loginSubmit').css("background-color", "#000000");
+                        } else if (result.msg.indexOf("密码") >= 0) {
+                            $('#loginPasswordTip').html(result.msg);
+                            $('#loginPasswordTip').show();
+                            $('#loginSubmit').attr("disabled", true);
+                            $('#loginSubmit').css("background-color", "#000000");
+                        }
+                    }
+                },
+                error: function (result) {
+                    console.log(result)
+                }
+            });
+        }
+        /**
+         * 校验注册对象方法
+         */
+        function checkRegisterUser() {
+            var data = getRegisterData();
+            $.ajax({
+                type: "POST",
+                url: "/user/check",
+                dataType: 'json',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify(data),
+                success: function (result) {
+                    $('#registerUsernameTip').hide();
+                    $('#registerPasswordTip').hide();
+                    $('#phoneTip').hide();
+                    if (result.code == 0) {
+                        $('#registerUsernameTip').hide();
+                        $('#registerPasswordTip').hide();
+                        $('#phoneTip').hide();
+                    } else {
+                        if (result.msg.indexOf("用户名") >= 0) {
+                            $('#registerUsernameTip').html(result.msg);
+                            $('#registerUsernameTip').show();
+                        } else if (result.msg.indexOf("密码") >= 0) {
+                            $('#registerPasswordTip').html(result.msg);
+                            $('#registerPasswordTip').show();
+                        } else if (result.msg.indexOf("手机") >= 0) {
+                            $('#phoneTip').html(result.msg);
+                            $('#phoneTip').show();
+                        }
+                    }
+                },
+                error: function (result) {
+                    console.log(result)
+                }
+            });
+        }
+
+        /**
+         * 登录方法
+         */
+        $('#loginSubmit').on('click', function () {
+            var data = getLoginData();
+            $.ajax({
+                type: "POST",
+                url: "/user/login",
+                dataType: 'json',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify(data),
+                success: function (result) {
+                    $('#loginUsernameTip').hide();
+                    $('#loginPasswordTip').hide();
+                    if (result.code == 0) {
+                        alert("登陆成功");
+                        $('#loginUsernameTip').hide();
+                        $('#loginPasswordTip').hide();
+                        window.location.href = baseUrl()+"/tTeacher/teacher.htm";
+                    } else{
+                        if (result.msg.indexOf("用户名") >= 0) {
+                            $('#loginUsernameTip').html(result.msg);
+                            $('#loginUsernameTip').show();
+
+                        } else if (result.msg.indexOf("密码") >= 0) {
+                            $('#loginPasswordTip').html(result.msg);
+                            $('#loginPasswordTip').show();
+                        }
+                    }
+                },
+                error: function (result) {
+                    console.log(result)
+                }
+            });
+        })
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+body
+{
+    font-family:Arial, Sans-Serif;
+    font-size:0.85em;
+}
+img
+{
+    border:none;
+}
+.teacherForm ul, ul li
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.teacherForm ul li.formLast
+{
+    border-top: 1px solid #DFDFDF;
+}
+.teacherForm ul li.formLast
+{
+    border: none;
+}
+.teacherForm ul p
+{
+    float: left;
+    margin: 0;
+    width: 310px;
+}
+.teacherForm ul h3
+{
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 5px 0 0 0;
+    width: 200px;
+    margin-left:20px;
+}
+.teacherForm ul li
+{
+    border-bottom: 1px solid #DFDFDF;
+    padding: 15px 0;
+    width:600px;
+    overflow:hidden;
+}
+.teacherForm ul input[type="text"], ul input[type="password"]
+{
+    width:300px;
+    padding:5px;
+    position:relative;
+    border:solid 1px #666;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+}
+.teacherForm ul input.required
+{
+    border: solid 1px #f00;
+}
