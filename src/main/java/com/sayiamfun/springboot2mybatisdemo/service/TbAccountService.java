@@ -17,4 +17,6 @@ public interface TbAccountService {
 
     PageInfo<TbAccount> findAllAccount(int pageNum, int pageSize, QueryAccount queryAccount);
 
+    int addAccount(TbAccount tbAccount);
+
 }

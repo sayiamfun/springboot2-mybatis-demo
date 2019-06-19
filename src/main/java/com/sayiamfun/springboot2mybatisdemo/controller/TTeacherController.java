@@ -77,7 +77,7 @@ public class TTeacherController {
 
     @ResponseBody
     @ApiOperation(value = "根据id查询教师信息", notes = "根据id查询教师信息")
-    @ApiImplicitParam(name = "teacherId", value = "教师id", required = true, dataType = "path")
+    @ApiImplicitParam(name = "teacherId", value = "教师id", required = true, dataType = "int")
     @GetMapping("/{id}/")
     public ApiResult getById(
             @NotNull(message = "教师id不能为空")

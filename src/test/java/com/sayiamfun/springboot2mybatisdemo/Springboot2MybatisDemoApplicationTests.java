@@ -38,6 +38,15 @@ public class Springboot2MybatisDemoApplicationTests {
     }
 
     @Test
+    public void addAccountTest(){
+        TbAccount tbAccount = new TbAccount();
+        tbAccount.setName("test");
+        tbAccount.setBalance(200F);
+        tbAccount.setDeleted(0);
+        tbAccountService.addAccount(tbAccount);
+    }
+
+    @Test
     public void tTeacherTest(){
         PageInfo<TTeacher> allUser = tTeacherService.findAllUser(1, 2, new QueryTeacher());
         System.out.println(allUser.toString());

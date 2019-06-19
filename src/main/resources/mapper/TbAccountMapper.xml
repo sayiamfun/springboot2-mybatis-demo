@@ -1,31 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sayiamfun.springboot2mybatisdemo.mapper.TbAccountMapper">
-
-    <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.sayiamfun.springboot2mybatisdemo.entity.TbAccount">
-        <id column="id" property="id" />
-        <result column="name" property="name" />
-        <result column="balance" property="balance" />
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="balance" jdbcType="REAL" property="balance"/>
+        <result column="deleted" jdbcType="INTEGER" property="deleted"/>
     </resultMap>
+    <sql id="Base_Column_List">
+    id, name, balance, deleted
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_account
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_account
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.sayiamfun.springboot2mybatisdemo.entity.TbAccount">
+    insert into tb_account (id, name, balance, 
+      deleted)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{balance,jdbcType=REAL}, 
+      #{deleted,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="com.sayiamfun.springboot2mybatisdemo.entity.TbAccount">
+        insert into tb_account
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="balance != null">
+                balance,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="balance != null">
+                #{balance,jdbcType=REAL},
+            </if>
+            <if test="deleted != null">
+                #{deleted,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.sayiamfun.springboot2mybatisdemo.entity.TbAccount">
+        update tb_account
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="balance != null">
+                balance = #{balance,jdbcType=REAL},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.sayiamfun.springboot2mybatisdemo.entity.TbAccount">
+    update tb_account
+    set name = #{name,jdbcType=VARCHAR},
+      balance = #{balance,jdbcType=REAL},
+      deleted = #{deleted,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 
-    <sql id="BASE_TABLE">
-        tb_account
-    </sql>
 
-    <sql id="BASE_COLUMN">
-     id,`name`,balance,deleted
-    </sql>
-
-    <select id="selectAccounts" resultType="com.sayiamfun.springboot2mybatisdemo.entity.TbAccount" parameterType="com.sayiamfun.springboot2mybatisdemo.common.requestentity.QueryAccount">
+    <select id="selectAccounts" resultMap="BaseResultMap"
+            parameterType="com.sayiamfun.springboot2mybatisdemo.common.requestentity.QueryAccount">
         SELECT
-        <include refid="BASE_COLUMN"/>
-        FROM
-        <include refid="BASE_TABLE"/>
+        <include refid="Base_Column_List"/>
+        FROM tb_account
         <where>
             deleted = 0
-            <if test="name != null and name.length()>0">and `name` like #{name}</if>
+            <if test="name != null and name.length()&gt;0">and `name` like #{name}</if>
         </where>
     </select>
+
 
 </mapper>
