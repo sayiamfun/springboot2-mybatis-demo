@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import com.sayiamfun.springboot2mybatisdemo.common.requestentity.QueryAccount;
 import com.sayiamfun.springboot2mybatisdemo.entity.TTeacher;
 import com.sayiamfun.springboot2mybatisdemo.entity.TbAccount;
-import com.sayiamfun.springboot2mybatisdemo.mapper.TTeacherMapper;
 import com.sayiamfun.springboot2mybatisdemo.mapper.TbAccountMapper;
 import com.sayiamfun.springboot2mybatisdemo.service.TTeacherService;
 import com.sayiamfun.springboot2mybatisdemo.service.TbAccountService;
